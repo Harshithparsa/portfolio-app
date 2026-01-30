@@ -15,10 +15,8 @@ In Railway Dashboard, go to Variables and add:
 
 ```env
 NODE_ENV=production
-PORT=5000
 MONGODB_URI=your_mongodb_connection_string
 REDIS_URL=your_redis_connection_string
-ELASTICSEARCH_URL=your_elasticsearch_url
 JWT_SECRET=your_jwt_secret
 EMAIL_USER=your_email@gmail.com
 EMAIL_PASSWORD=your_app_password
