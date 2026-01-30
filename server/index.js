@@ -28,12 +28,16 @@ app.use(express.json());
 app.use(express.static('public'));
 app.use('/uploads', express.static('server/uploads'));
 
+const ensureAdmin = require('./utils/ensureAdmin');
+
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
-}).then(() => {
+}).then(async () => {
   console.log(' MongoDB connected');
+  // Ensure admin user exists
+  await ensureAdmin();
 }).catch(err => {
   console.error(' MongoDB connection error:', err);
 });
