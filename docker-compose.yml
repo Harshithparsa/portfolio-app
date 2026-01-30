@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongodb:27017/portfolio
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=change_this_to_a_secure_random_string
+      - ADMIN_SECRET_ROUTE=/admin-parsa-7734
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - portfolio-network
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - portfolio-network
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - portfolio-network
+
+networks:
+  portfolio-network:
+    driver: bridge
+
+volumes:
+  mongo-data:

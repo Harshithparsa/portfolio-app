@@ -1,0 +1,36 @@
+{
+  "name": "portfolio-app",
+  "version": "1.0.0",
+  "description": "Full-stack portfolio with admin dashboard",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "build": "echo 'Build skipped: No frontend compilation required'",
+    "dev": "nodemon server/index.js"
+  },
+  "dependencies": {
+    "apollo-server-express": "^3.13.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "elasticsearch": "^16.7.3",
+    "express": "^4.18.2",
+    "express-validator": "^7.3.1",
+    "graphql": "^16.12.0",
+    "ioredis": "^5.9.2",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^7.0.3",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^7.0.12",
+    "qrcode": "^1.5.4",
+    "sharp": "^0.34.5",
+    "socket.io": "^4.8.3",
+    "speakeasy": "^2.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}

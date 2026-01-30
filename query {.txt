@@ -1,0 +1,13 @@
+query {
+  analytics {
+    summary {
+      totalEvents
+      uniqueVisitors
+      pageViews
+    }
+    topPages {
+      page
+      views
+    }
+  }
+}

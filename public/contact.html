@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact — Harshith</title>
+  <meta name="description" content="Contact details of Harshith" />
+  <meta name="theme-color" content="#070A12">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <style>
+    :root {
+      --primary: #FF4D8D;
+      --secondary: #7C3AED;
+      --accent: #22C55E;
+      --cyan: #00D4FF;
+      --lime: #A3E635;
+      --bg-dark: #070A12;
+      --text-light: #EAF0FF;
+      --text-dark: #0F172A;
+      --muted: #94A3B8;
+      --border: rgba(255,255,255,0.14);
+      --card-glass: rgba(255,255,255,0.10);
+      --shadow: 0 30px 80px rgba(0,0,0,0.25);
+      --radius: 16px;
+      --transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    [data-theme="light"] {
+      --bg: #F7F7FB;
+      --bg-secondary: #FFFFFF;
+      --text: #0F172A;
+      --card-glass: rgba(255,255,255,0.95);
+      --border: rgba(0,0,0,0.08);
+      --shadow: 0 20px 60px rgba(0,0,0,0.12);
+    }
+
+    [data-theme="dark"] {
+      --bg: #070A12;
+      --bg-secondary: #0F1423;
+      --text: #EAF0FF;
+      --card-glass: rgba(255,255,255,0.10);
+      --border: rgba(255,255,255,0.14);
+      --shadow: 0 30px 80px rgba(0,0,0,0.25);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.4s, color 0.4s;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 40%, rgba(255, 77, 141, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 60%, rgba(122, 58, 237, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 40% 80%, rgba(0, 212, 255, 0.08) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+      animation: gradientShift 20s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(30px, -30px); }
+    }
+
+    /* ========== NAVBAR ========== */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      backdrop-filter: blur(12px);
+      background: var(--card-glass);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+    }
+
+    .navbar-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      font-weight: 900;
+      font-size: 18px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .navbar-logo img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary);
+      box-shadow: 0 10px 25px rgba(255,77,141,0.25);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 500;
+      font-size: 14px;
+      position: relative;
+      transition: var(--transition);
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      transition: width 0.3s;
+    }
+
+    .nav-link:hover { color: var(--primary); }
+    .nav-link:hover::after { width: 100%; }
+
+    .nav-link.active { color: var(--primary); }
+    .nav-link.active::after { width: 100%; }
+
+    #themeToggle {
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 8px;
+      transition: var(--transition);
+      color: var(--text);
+    }
+
+    #themeToggle:hover { transform: rotate(20deg) scale(1.05); }
+
+    /* ========== PAGE LAYOUT ========== */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 140px 24px 80px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-size: 2.8rem;
+      margin-bottom: 12px;
+      font-weight: 950;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, var(--primary), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header p {
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 720px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 24px;
+    }
+
+    .card {
+      background: var(--card-glass);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) + 6px);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      min-height: 120px;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(255,77,141,0.10), transparent 45%),
+        radial-gradient(circle at 90% 80%, rgba(0,212,255,0.08), transparent 45%);
+      pointer-events: none;
+    }
+
+    .card > * { position: relative; }
+
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(255,77,141,0.55);
+      box-shadow: 0 24px 80px rgba(255,77,141,0.10);
+    }
+
+    .card h3 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      margin-bottom: 10px;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      font-weight: 900;
+    }
+
+    .card p {
+      font-size: 15px;
+      font-weight: 750;
+      color: var(--text);
+      line-height: 1.4;
+      word-break: break-word;
+    }
+
+    .card a {
+      color: var(--cyan);
+      text-decoration: none;
+      font-weight: 800;
+      transition: var(--transition);
+    }
+
+    .card a:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+
+    .mini {
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 650;
+    }
+
+    /* ========== FOOTER ========== */
+    footer {
+      padding: 40px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    footer p { margin-bottom: 8px; }
+
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 800;
+    }
+
+    footer a:hover { text-decoration: underline; }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .navbar-container { padding: 0 12px; }
+      .navbar-logo { font-size: 14px; }
+      .navbar-logo img { width: 28px; height: 28px; }
+      nav { padding: 12px 0; }
+      .container { padding: 120px 12px 60px; }
+      .header h1 { font-size: 1.9rem; }
+      .nav-links { display: none; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body data-theme="light">
+  <!-- ========== NAVBAR ========== -->
+  <nav>
+    <div class="navbar-container">
+      <a href="/" class="navbar-logo">
+        <img id="logoImg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23FF4D8D'/%3E%3Cstop offset='100%25' style='stop-color:%237C3AED'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g)' width='100' height='100'/%3E%3Ctext x='50%25' y='55%25' font-size='50' font-weight='bold' fill='white' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E" alt="Logo">
+        <span id="logoText">Harshith</span>
+      </a>
+
+      <div class="nav-links">
+        <a href="/" class="nav-link">Home</a>
+        <a href="/#about" class="nav-link">About</a>
+        <a href="/#services" class="nav-link">What I Do</a>
+        <a href="/#projects" class="nav-link">Projects</a>
+        <a href="/#achievements" class="nav-link">Achievements</a>
+        <a href="/contact.html" class="nav-link active">Contact</a>
+        <button id="themeToggle">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ========== MAIN ========== -->
+  <div class="container">
+    <div class="header">
+      <h1>Contact Me</h1>
+      <p>
+        You can contact me using the details below.  
+        I’m open to internships, projects, and collaborations.
+      </p>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h3>📱 Mobile</h3>
+        <p><a href="tel:+919014975103">+91 9014975103</a></p>
+        <div class="mini">Tap to call directly</div>
+      </div>
+
+      <div class="card">
+        <h3>📧 Email</h3>
+        <p><a href="mailto:parsaharshith@gmail.com">parsaharshith@gmail.com</a></p>
+        <div class="mini">Tap to send email</div>
+      </div>
+
+      <div class="card">
+        <h3>💼 LinkedIn</h3>
+        <p><a href="https://www.linkedin.com/in/parsa-harshith-r1030" target="_blank">linkedin.com/in/parsa-harshith-r1030</a></p>
+        <div class="mini">View my profile</div>
+      </div>
+
+      <div class="card">
+        <h3>🐙 GitHub</h3>
+        <p><a href="https://github.com/Harshithparsa" target="_blank">github.com/Harshithparsa</a></p>
+        <div class="mini">See my projects</div>
+      </div>
+
+      <div class="card">
+        <h3>📍 Location</h3>
+        <p>Telangana, India</p>
+        <div class="mini">Available in IST timezone</div>
+      </div>
+
+      <div class="card">
+        <h3>💬 WhatsApp</h3>
+        <p><a href="https://wa.me/919014975103" target="_blank">Chat on WhatsApp</a></p>
+        <div class="mini">Quickest way to reach me</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== FOOTER ========== -->
+  <footer>
+    <p>Designed & Built by <strong id="footerName">Harshith</strong></p>
+    <p>© 2026 All Rights Reserved | Full-Stack Developer & MERN Specialist</p>
+    <p><a href="/">Back to Portfolio</a></p>
+  </footer>
+
+  <script>
+    // ===== Theme Toggle =====
+    let currentTheme = localStorage.getItem('theme') || 'light';
+    document.body.setAttribute('data-theme', currentTheme);
+    document.getElementById('themeToggle').textContent = currentTheme === 'light' ? '🌙' : '☀️';
+
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+      document.body.setAttribute('data-theme', currentTheme);
+      localStorage.setItem('theme', currentTheme);
+      document.getElementById('themeToggle').textContent = currentTheme === 'light' ? '🌙' : '☀️';
+    });
+  </script>
+</body>
+</html>
