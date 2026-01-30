@@ -975,13 +975,25 @@
 
     <script>
         const API_BASE = '/api';
-        let token = localStorage.getItem('token');
+        let token = localStorage.getItem('token'); // Keep token as let for assignment in handleLogin
         let currentPortfolio = null;
 
-        // AUTH SYSTEM
+        // ========== INITIALIZATION ==============
+
+        // Remove Login Page completely
+        document.getElementById('loginOverlay').style.display = 'none';
+        document.getElementById('sidebar').style.display = 'flex';
+        document.getElementById('mainContent').style.display = 'block';
+
+        initDashboard();
+
+        /*
+        // Check for token on load
+        const token = localStorage.getItem('token');
         if (token) {
             initDashboard();
         }
+        */
 
         async function handleLogin(e) {
             e.preventDefault();
@@ -996,7 +1008,8 @@
                 });
 
                 const data = await response.json();
-                if (data.success) {
+
+                if (response.ok) {
                     token = data.token;
                     localStorage.setItem('token', token);
                     initDashboard();
@@ -1043,7 +1056,7 @@
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
-                if (response.status === 401) return logout();
+                // if (response.status === 401) return logout();
                 if (!response.ok) throw new Error();
 
                 currentPortfolio = await response.json();
