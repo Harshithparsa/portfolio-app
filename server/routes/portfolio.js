@@ -3,9 +3,14 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const Portfolio = require('../models/Portfolio');
-const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+const {
+  Profile,
+  SkillCategory,
+  Project,
+  Certificate,
+  Achievement
+} = require('../models');
 
 // ==================== Multer Configuration ====================
 const storage = multer.diskStorage({
@@ -24,25 +29,16 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
+  limits: { fileSize: 50 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    // For profile image: allow images only
     if (file.fieldname === 'profileImage') {
       const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-      if (allowedMimes.includes(file.mimetype)) {
-        cb(null, true);
-      } else {
-        cb(new Error('Invalid file type for profile image. Use JPEG, PNG, GIF, or WEBP.'));
-      }
-    }
-    // For resume and CV: allow PDF and documents
-    else if (file.fieldname === 'resume' || file.fieldname === 'cv') {
+      if (allowedMimes.includes(file.mimetype)) cb(null, true);
+      else cb(new Error('Invalid file type for profile image.'));
+    } else if (file.fieldname === 'resume' || file.fieldname === 'cv') {
       const allowedMimes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-      if (allowedMimes.includes(file.mimetype)) {
-        cb(null, true);
-      } else {
-        cb(new Error('Invalid file type for ' + file.fieldname + '. Use PDF or Word document.'));
-      }
+      if (allowedMimes.includes(file.mimetype)) cb(null, true);
+      else cb(new Error('Invalid file type for document.'));
     } else {
       cb(null, true);
     }
@@ -53,15 +49,10 @@ const upload = multer({
 const authAdmin = (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(' ')[1];
-    if (!token) {
-      return res.status(401).json({ message: 'No token provided' });
-    }
+    if (!token) return res.status(401).json({ message: 'No token provided' });
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
-    // Accept tokens with either userId or id field
-    if (!(decoded.id || decoded.userId)) {
-      return res.status(403).json({ message: 'Invalid token' });
-    }
+    if (!(decoded.id || decoded.userId)) return res.status(403).json({ message: 'Invalid token' });
 
     req.userId = decoded.id || decoded.userId;
     next();
@@ -72,703 +63,290 @@ const authAdmin = (req, res, next) => {
 
 // ==================== PUBLIC ROUTES ====================
 
-// GET /api/portfolio/public/profile - Fetch public portfolio profile
+// GET /api/portfolio/public/profile - Fetch all
 router.get('/public/profile', async (req, res) => {
   try {
-    const portfolio = await Portfolio.findOne();
-    if (!portfolio) {
-      return res.status(404).json({ message: 'Portfolio not found' });
-    }
-    
-    // Return public profile data (sanitize admin fields)
+    const profile = await Profile.findOne() || {};
+    const skills = await SkillCategory.findAll();
+    const certificates = await Certificate.findAll();
+    const projects = await Project.findAll();
+    const achievements = await Achievement.findAll();
+
     res.json({
-      profile: portfolio.profile,
-      skills: portfolio.skills,
-      certificates: portfolio.certificates,
-      projects: portfolio.projects,
-      achievements: portfolio.achievements
+      profile,
+      skills,
+      certificates,
+      projects,
+      achievements
     });
   } catch (error) {
     res.status(500).json({ message: 'Error fetching portfolio', error: error.message });
   }
 });
 
-// GET /api/portfolio/public/:field - Fetch specific field (profile, skills, projects, etc.)
+// GET /api/portfolio/public/:field
 router.get('/public/:field', async (req, res) => {
   try {
     const { field } = req.params;
-    const allowedFields = ['profile', 'skills', 'certificates', 'projects', 'achievements'];
+    let data;
 
-    if (!allowedFields.includes(field)) {
-      return res.status(400).json({ message: 'Invalid field requested' });
+    switch (field) {
+      case 'profile': data = await Profile.findOne(); break;
+      case 'skills': data = await SkillCategory.findAll(); break;
+      case 'certificates': data = await Certificate.findAll(); break;
+      case 'projects': data = await Project.findAll(); break;
+      case 'achievements': data = await Achievement.findAll(); break;
+      default: return res.status(400).json({ message: 'Invalid field' });
     }
 
-    const portfolio = await Portfolio.findOne();
-    if (!portfolio) {
-      return res.status(404).json({ message: 'Portfolio not found' });
-    }
-
-    res.json({ [field]: portfolio[field] });
+    res.json({ [field]: data || (Array.isArray(data) ? [] : {}) });
   } catch (error) {
     res.status(500).json({ message: 'Error fetching field', error: error.message });
   }
 });
 
-// POST /api/portfolio/contact - Contact form submission
 router.post('/contact', async (req, res) => {
-  try {
-    const { name, email, subject, message } = req.body;
-
-    if (!name || !email || !subject || !message) {
-      return res.status(400).json({ message: 'All fields are required' });
-    }
-
-    // TODO: Save contact message to database or send email
-    console.log('Contact form submission:', { name, email, subject, message });
-
-    res.json({ 
-      message: 'Thank you for your message! I will get back to you soon.',
-      success: true 
-    });
-  } catch (error) {
-    res.status(500).json({ message: 'Error processing contact form', error: error.message });
-  }
+  res.json({ message: 'Thank you for your message!', success: true });
 });
 
-// POST /api/portfolio/track - Analytics tracking
 router.post('/track', async (req, res) => {
-  try {
-    const { event, data } = req.body;
-    
-    // TODO: Save analytics data
-    console.log('Analytics event:', { event, data, timestamp: new Date() });
-
-    res.json({ success: true });
-  } catch (error) {
-    res.status(500).json({ message: 'Error tracking event', error: error.message });
-  }
+  res.json({ success: true });
 });
 
-// ==================== ADMIN ROUTES (JWT Protected) ====================
+// ==================== ADMIN ROUTES ====================
 
-// GET /api/admin/portfolio - Fetch complete portfolio for editing
+// GET /api/admin/portfolio - Fetch complete portfolio
 router.get('/admin/portfolio', authAdmin, async (req, res) => {
   try {
-    const portfolio = await Portfolio.findOne();
-    if (!portfolio) {
-      return res.status(404).json({ message: 'Portfolio not found' });
-    }
-    
-    res.json(portfolio);
+    const profile = await Profile.findOne() || {};
+    const skills = await SkillCategory.findAll();
+    const certificates = await Certificate.findAll();
+    const projects = await Project.findAll();
+    const achievements = await Achievement.findAll();
+
+    // Construct object to match expected frontend format
+    res.json({
+      profile,
+      skills,
+      certificates,
+      projects,
+      achievements
+    });
   } catch (error) {
     res.status(500).json({ message: 'Error fetching portfolio', error: error.message });
   }
 });
 
-// PUT /api/admin/portfolio - Update portfolio profile
+// PUT /api/admin/portfolio - Update profile
 router.put('/admin/portfolio', authAdmin, async (req, res) => {
   try {
     const { profile } = req.body;
+    let userProfile = await Profile.findOne();
 
-    if (!profile) {
-      return res.status(400).json({ message: 'Profile data is required' });
+    if (userProfile) {
+      await userProfile.update(profile);
+    } else {
+      userProfile = await Profile.create(profile);
     }
 
-    const portfolio = await Portfolio.findOne();
-    if (!portfolio) {
-      return res.status(404).json({ message: 'Portfolio not found' });
-    }
-
-    // Update profile fields
-    Object.assign(portfolio.profile, profile);
-    portfolio.updatedAt = new Date();
-
-    await portfolio.save();
-
-    res.json({ 
-      message: 'Profile updated successfully', 
-      profile: portfolio.profile 
-    });
+    res.json({ message: 'Profile updated', profile: userProfile });
   } catch (error) {
     res.status(500).json({ message: 'Error updating profile', error: error.message });
   }
 });
 
-// POST /api/admin/portfolio/skills - Add skill
+// SKILLS
 router.post('/admin/portfolio/skills', authAdmin, async (req, res) => {
   try {
-    const { category, items } = req.body;
-
-    if (!category || !items || !Array.isArray(items)) {
-      return res.status(400).json({ message: 'Category and items array are required' });
-    }
-
-    const portfolio = await Portfolio.findOne();
-    if (!portfolio) {
-      return res.status(404).json({ message: 'Portfolio not found' });
-    }
-
-    // Check if category already exists
-    const existingCategory = portfolio.skills.find(s => s.category === category);
-    if (existingCategory) {
-      return res.status(400).json({ message: 'Category already exists' });
-    }
-
-    portfolio.skills.push({ category, items });
-    portfolio.updatedAt = new Date();
-    await portfolio.save();
-
-    res.status(201).json({ 
-      message: 'Skill category added successfully', 
-      skills: portfolio.skills 
-    });
+    const skill = await SkillCategory.create(req.body);
+    const skills = await SkillCategory.findAll();
+    res.status(201).json({ message: 'Skill added', skills });
   } catch (error) {
     res.status(500).json({ message: 'Error adding skill', error: error.message });
   }
 });
 
-// PUT /api/admin/portfolio/skills/:categoryId - Update skill category
-router.put('/admin/portfolio/skills/:categoryId', authAdmin, async (req, res) => {
+router.put('/admin/portfolio/skills/:id', authAdmin, async (req, res) => {
   try {
-    const { categoryId } = req.params;
-    const { category, items } = req.body;
-
-    const portfolio = await Portfolio.findOne();
-    if (!portfolio) {
-      return res.status(404).json({ message: 'Portfolio not found' });
-    }
-
-    const skillIndex = portfolio.skills.findIndex(s => s._id.toString() === categoryId);
-    if (skillIndex === -1) {
-      return res.status(404).json({ message: 'Skill category not found' });
-    }
-
-    if (category) portfolio.skills[skillIndex].category = category;
-    if (items && Array.isArray(items)) portfolio.skills[skillIndex].items = items;
-
-    portfolio.updatedAt = new Date();
-    await portfolio.save();
-
-    res.json({ 
-      message: 'Skill category updated successfully', 
-      skills: portfolio.skills 
-    });
+    await SkillCategory.update(req.body, { where: { id: req.params.id } });
+    const skills = await SkillCategory.findAll();
+    res.json({ message: 'Skill updated', skills });
   } catch (error) {
     res.status(500).json({ message: 'Error updating skill', error: error.message });
   }
 });
 
-// DELETE /api/admin/portfolio/skills/:categoryId - Delete skill category
-router.delete('/admin/portfolio/skills/:categoryId', authAdmin, async (req, res) => {
+router.delete('/admin/portfolio/skills/:id', authAdmin, async (req, res) => {
   try {
-    const { categoryId } = req.params;
-
-    const portfolio = await Portfolio.findOne();
-    if (!portfolio) {
-      return res.status(404).json({ message: 'Portfolio not found' });
-    }
-
-    portfolio.skills = portfolio.skills.filter(s => s._id.toString() !== categoryId);
-    portfolio.updatedAt = new Date();
-    await portfolio.save();
-
-    res.json({ 
-      message: 'Skill category deleted successfully', 
-      skills: portfolio.skills 
-    });
+    await SkillCategory.destroy({ where: { id: req.params.id } });
+    const skills = await SkillCategory.findAll();
+    res.json({ message: 'Skill deleted', skills });
   } catch (error) {
     res.status(500).json({ message: 'Error deleting skill', error: error.message });
   }
 });
 
-// POST /api/admin/portfolio/projects - Add project
+// PROJECTS
 router.post('/admin/portfolio/projects', authAdmin, async (req, res) => {
   try {
-    const { title, description, tags, imageUrl, githubLink, liveLink, featured } = req.body;
-
-    if (!title || !description) {
-      return res.status(400).json({ message: 'Title and description are required' });
-    }
-
-    const portfolio = await Portfolio.findOne();
-    if (!portfolio) {
-      return res.status(404).json({ message: 'Portfolio not found' });
-    }
-
-    portfolio.projects.push({
-      title,
-      description,
-      tags: tags || [],
-      imageUrl: imageUrl || '',
-      githubLink: githubLink || '',
-      liveLink: liveLink || '',
-      featured: featured || false
-    });
-
-    portfolio.updatedAt = new Date();
-    await portfolio.save();
-
-    res.status(201).json({ 
-      message: 'Project added successfully', 
-      projects: portfolio.projects 
-    });
+    await Project.create(req.body);
+    const projects = await Project.findAll();
+    res.status(201).json({ message: 'Project added', projects });
   } catch (error) {
     res.status(500).json({ message: 'Error adding project', error: error.message });
   }
 });
 
-// PUT /api/admin/portfolio/projects/:projectId - Update project
-router.put('/admin/portfolio/projects/:projectId', authAdmin, async (req, res) => {
+router.put('/admin/portfolio/projects/:id', authAdmin, async (req, res) => {
   try {
-    const { projectId } = req.params;
-    const { title, description, tags, imageUrl, githubLink, liveLink, featured } = req.body;
-
-    const portfolio = await Portfolio.findOne();
-    if (!portfolio) {
-      return res.status(404).json({ message: 'Portfolio not found' });
-    }
-
-    const projectIndex = portfolio.projects.findIndex(p => p._id.toString() === projectId);
-    if (projectIndex === -1) {
-      return res.status(404).json({ message: 'Project not found' });
-    }
-
-    const project = portfolio.projects[projectIndex];
-    if (title) project.title = title;
-    if (description) project.description = description;
-    if (tags) project.tags = tags;
-    if (imageUrl) project.imageUrl = imageUrl;
-    if (githubLink) project.githubLink = githubLink;
-    if (liveLink) project.liveLink = liveLink;
-    if (typeof featured !== 'undefined') project.featured = featured;
-
-    portfolio.updatedAt = new Date();
-    await portfolio.save();
-
-    res.json({ 
-      message: 'Project updated successfully', 
-      projects: portfolio.projects 
-    });
+    await Project.update(req.body, { where: { id: req.params.id } });
+    const projects = await Project.findAll();
+    res.json({ message: 'Project updated', projects });
   } catch (error) {
     res.status(500).json({ message: 'Error updating project', error: error.message });
   }
 });
 
-// DELETE /api/admin/portfolio/projects/:projectId - Delete project
-router.delete('/admin/portfolio/projects/:projectId', authAdmin, async (req, res) => {
+router.delete('/admin/portfolio/projects/:id', authAdmin, async (req, res) => {
   try {
-    const { projectId } = req.params;
-
-    const portfolio = await Portfolio.findOne();
-    if (!portfolio) {
-      return res.status(404).json({ message: 'Portfolio not found' });
-    }
-
-    portfolio.projects = portfolio.projects.filter(p => p._id.toString() !== projectId);
-    portfolio.updatedAt = new Date();
-    await portfolio.save();
-
-    res.json({ 
-      message: 'Project deleted successfully', 
-      projects: portfolio.projects 
-    });
+    await Project.destroy({ where: { id: req.params.id } });
+    const projects = await Project.findAll();
+    res.json({ message: 'Project deleted', projects });
   } catch (error) {
     res.status(500).json({ message: 'Error deleting project', error: error.message });
   }
 });
 
-// POST /api/admin/portfolio/certificates - Add certificate
+// CERTIFICATES
 router.post('/admin/portfolio/certificates', authAdmin, async (req, res) => {
   try {
-    const { title, issuer, date, link, badgeIcon } = req.body;
-
-    if (!title || !issuer) {
-      return res.status(400).json({ message: 'Title and issuer are required' });
-    }
-
-    const portfolio = await Portfolio.findOne();
-    if (!portfolio) {
-      return res.status(404).json({ message: 'Portfolio not found' });
-    }
-
-    portfolio.certificates.push({
-      title,
-      issuer,
-      date: date || new Date(),
-      link: link || '',
-      badgeIcon: badgeIcon || ''
-    });
-
-    portfolio.updatedAt = new Date();
-    await portfolio.save();
-
-    res.status(201).json({ 
-      message: 'Certificate added successfully', 
-      certificates: portfolio.certificates 
-    });
+    await Certificate.create(req.body);
+    const certificates = await Certificate.findAll();
+    res.status(201).json({ message: 'Certificate added', certificates });
   } catch (error) {
     res.status(500).json({ message: 'Error adding certificate', error: error.message });
   }
 });
 
-// PUT /api/admin/portfolio/certificates/:certificateId - Update certificate
-router.put('/admin/portfolio/certificates/:certificateId', authAdmin, async (req, res) => {
+router.put('/admin/portfolio/certificates/:id', authAdmin, async (req, res) => {
   try {
-    const { certificateId } = req.params;
-    const { title, issuer, date, link, badgeIcon } = req.body;
-
-    const portfolio = await Portfolio.findOne();
-    if (!portfolio) {
-      return res.status(404).json({ message: 'Portfolio not found' });
-    }
-
-    const certIndex = portfolio.certificates.findIndex(c => c._id.toString() === certificateId);
-    if (certIndex === -1) {
-      return res.status(404).json({ message: 'Certificate not found' });
-    }
-
-    const cert = portfolio.certificates[certIndex];
-    if (title) cert.title = title;
-    if (issuer) cert.issuer = issuer;
-    if (date) cert.date = date;
-    if (link) cert.link = link;
-    if (badgeIcon) cert.badgeIcon = badgeIcon;
-
-    portfolio.updatedAt = new Date();
-    await portfolio.save();
-
-    res.json({ 
-      message: 'Certificate updated successfully', 
-      certificates: portfolio.certificates 
-    });
+    await Certificate.update(req.body, { where: { id: req.params.id } });
+    const certificates = await Certificate.findAll();
+    res.json({ message: 'Certificate updated', certificates });
   } catch (error) {
     res.status(500).json({ message: 'Error updating certificate', error: error.message });
   }
 });
 
-// DELETE /api/admin/portfolio/certificates/:certificateId - Delete certificate
-router.delete('/admin/portfolio/certificates/:certificateId', authAdmin, async (req, res) => {
+router.delete('/admin/portfolio/certificates/:id', authAdmin, async (req, res) => {
   try {
-    const { certificateId } = req.params;
-
-    const portfolio = await Portfolio.findOne();
-    if (!portfolio) {
-      return res.status(404).json({ message: 'Portfolio not found' });
-    }
-
-    portfolio.certificates = portfolio.certificates.filter(c => c._id.toString() !== certificateId);
-    portfolio.updatedAt = new Date();
-    await portfolio.save();
-
-    res.json({ 
-      message: 'Certificate deleted successfully', 
-      certificates: portfolio.certificates 
-    });
+    await Certificate.destroy({ where: { id: req.params.id } });
+    const certificates = await Certificate.findAll();
+    res.json({ message: 'Certificate deleted', certificates });
   } catch (error) {
     res.status(500).json({ message: 'Error deleting certificate', error: error.message });
   }
 });
 
-// POST /api/admin/portfolio/achievements - Add achievement
+// ACHIEVEMENTS
 router.post('/admin/portfolio/achievements', authAdmin, async (req, res) => {
   try {
-    const { date, title, detail } = req.body;
-
-    if (!date || !title) {
-      return res.status(400).json({ message: 'Date and title are required' });
-    }
-
-    const portfolio = await Portfolio.findOne();
-    if (!portfolio) {
-      return res.status(404).json({ message: 'Portfolio not found' });
-    }
-
-    portfolio.achievements.push({
-      date,
-      title,
-      detail: detail || ''
-    });
-
-    portfolio.updatedAt = new Date();
-    await portfolio.save();
-
-    res.status(201).json({ 
-      message: 'Achievement added successfully', 
-      achievements: portfolio.achievements 
-    });
+    await Achievement.create(req.body);
+    const achievements = await Achievement.findAll();
+    res.status(201).json({ message: 'Achievement added', achievements });
   } catch (error) {
     res.status(500).json({ message: 'Error adding achievement', error: error.message });
   }
 });
 
-// PUT /api/admin/portfolio/achievements/:achievementId - Update achievement
-router.put('/admin/portfolio/achievements/:achievementId', authAdmin, async (req, res) => {
+router.put('/admin/portfolio/achievements/:id', authAdmin, async (req, res) => {
   try {
-    const { achievementId } = req.params;
-    const { date, title, detail } = req.body;
-
-    const portfolio = await Portfolio.findOne();
-    if (!portfolio) {
-      return res.status(404).json({ message: 'Portfolio not found' });
-    }
-
-    const achvIndex = portfolio.achievements.findIndex(a => a._id.toString() === achievementId);
-    if (achvIndex === -1) {
-      return res.status(404).json({ message: 'Achievement not found' });
-    }
-
-    const achv = portfolio.achievements[achvIndex];
-    if (date) achv.date = date;
-    if (title) achv.title = title;
-    if (detail) achv.detail = detail;
-
-    portfolio.updatedAt = new Date();
-    await portfolio.save();
-
-    res.json({ 
-      message: 'Achievement updated successfully', 
-      achievements: portfolio.achievements 
-    });
+    await Achievement.update(req.body, { where: { id: req.params.id } });
+    const achievements = await Achievement.findAll();
+    res.json({ message: 'Achievement updated', achievements });
   } catch (error) {
     res.status(500).json({ message: 'Error updating achievement', error: error.message });
   }
 });
 
-// DELETE /api/admin/portfolio/achievements/:achievementId - Delete achievement
-router.delete('/admin/portfolio/achievements/:achievementId', authAdmin, async (req, res) => {
+router.delete('/admin/portfolio/achievements/:id', authAdmin, async (req, res) => {
   try {
-    const { achievementId } = req.params;
-
-    const portfolio = await Portfolio.findOne();
-    if (!portfolio) {
-      return res.status(404).json({ message: 'Portfolio not found' });
-    }
-
-    portfolio.achievements = portfolio.achievements.filter(a => a._id.toString() !== achievementId);
-    portfolio.updatedAt = new Date();
-    await portfolio.save();
-
-    res.json({ 
-      message: 'Achievement deleted successfully', 
-      achievements: portfolio.achievements 
-    });
+    await Achievement.destroy({ where: { id: req.params.id } });
+    const achievements = await Achievement.findAll();
+    res.json({ message: 'Achievement deleted', achievements });
   } catch (error) {
     res.status(500).json({ message: 'Error deleting achievement', error: error.message });
   }
 });
 
-// ==================== BULK UPDATE ROUTES (JWT Protected) ====================
-
-// PUT /api/portfolio/admin/skills - Bulk update all skills
+// BULK UPDATES
 router.put('/admin/skills', authAdmin, async (req, res) => {
   try {
-    const { skills } = req.body;
-
-    if (!Array.isArray(skills)) {
-      return res.status(400).json({ message: 'Skills must be an array' });
+    await SkillCategory.destroy({ truncate: true });
+    if (req.body.skills && req.body.skills.length > 0) {
+      await SkillCategory.bulkCreate(req.body.skills);
     }
-
-    const portfolio = await Portfolio.findOne();
-    if (!portfolio) {
-      return res.status(404).json({ message: 'Portfolio not found' });
-    }
-
-    portfolio.skills = skills;
-    portfolio.updatedAt = new Date();
-    await portfolio.save();
-
-    res.json({ 
-      message: 'Skills updated successfully', 
-      skills: portfolio.skills 
-    });
+    const skills = await SkillCategory.findAll();
+    res.json({ message: 'Skills updated', skills });
   } catch (error) {
     res.status(500).json({ message: 'Error updating skills', error: error.message });
   }
 });
 
-// PUT /api/portfolio/admin/certificates - Bulk update all certificates
-router.put('/admin/certificates', authAdmin, async (req, res) => {
-  try {
-    const { certificates } = req.body;
-
-    if (!Array.isArray(certificates)) {
-      return res.status(400).json({ message: 'Certificates must be an array' });
-    }
-
-    const portfolio = await Portfolio.findOne();
-    if (!portfolio) {
-      return res.status(404).json({ message: 'Portfolio not found' });
-    }
-
-    portfolio.certificates = certificates;
-    portfolio.updatedAt = new Date();
-    await portfolio.save();
-
-    res.json({ 
-      message: 'Certificates updated successfully', 
-      certificates: portfolio.certificates 
-    });
-  } catch (error) {
-    res.status(500).json({ message: 'Error updating certificates', error: error.message });
-  }
-});
-
-// PUT /api/portfolio/admin/projects - Bulk update all projects
 router.put('/admin/projects', authAdmin, async (req, res) => {
   try {
-    const { projects } = req.body;
-
-    if (!Array.isArray(projects)) {
-      return res.status(400).json({ message: 'Projects must be an array' });
+    await Project.destroy({ truncate: true });
+    if (req.body.projects && req.body.projects.length > 0) {
+      await Project.bulkCreate(req.body.projects);
     }
-
-    const portfolio = await Portfolio.findOne();
-    if (!portfolio) {
-      return res.status(404).json({ message: 'Portfolio not found' });
-    }
-
-    portfolio.projects = projects;
-    portfolio.updatedAt = new Date();
-    await portfolio.save();
-
-    res.json({ 
-      message: 'Projects updated successfully', 
-      projects: portfolio.projects 
-    });
+    const projects = await Project.findAll();
+    res.json({ message: 'Projects updated', projects });
   } catch (error) {
     res.status(500).json({ message: 'Error updating projects', error: error.message });
   }
 });
 
-// PUT /api/portfolio/admin/achievements - Bulk update all achievements
-router.put('/admin/achievements', authAdmin, async (req, res) => {
-  try {
-    const { achievements } = req.body;
-
-    if (!Array.isArray(achievements)) {
-      return res.status(400).json({ message: 'Achievements must be an array' });
-    }
-
-    const portfolio = await Portfolio.findOne();
-    if (!portfolio) {
-      return res.status(404).json({ message: 'Portfolio not found' });
-    }
-
-    portfolio.achievements = achievements;
-    portfolio.updatedAt = new Date();
-    await portfolio.save();
-
-    res.json({ 
-      message: 'Achievements updated successfully', 
-      achievements: portfolio.achievements 
-    });
-  } catch (error) {
-    res.status(500).json({ message: 'Error updating achievements', error: error.message });
-  }
-});
-
-// ==================== FILE UPLOAD ROUTES (JWT Protected) ====================
-
-// POST /api/admin/upload/profile-image - Upload profile picture
+// UPLOADS
 router.post('/admin/upload/profile-image', authAdmin, upload.single('profileImage'), async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ message: 'No file uploaded' });
-    }
-
-    const portfolio = await Portfolio.findOne();
-    if (!portfolio) {
-      return res.status(404).json({ message: 'Portfolio not found' });
-    }
-
-    // Delete old file if exists
-    if (portfolio.profile.profileImage) {
-      const oldFilePath = path.join(__dirname, '../uploads', path.basename(portfolio.profile.profileImage));
-      if (fs.existsSync(oldFilePath)) {
-        fs.unlinkSync(oldFilePath);
-      }
-    }
+    if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
 
     const fileUrl = `/uploads/${req.file.filename}`;
-    portfolio.profile.profileImage = fileUrl;
-    portfolio.updatedAt = new Date();
-    await portfolio.save();
+    let profile = await Profile.findOne();
+    if (profile) {
+      await profile.update({ profileImage: fileUrl });
+    } else {
+      profile = await Profile.create({ profileImage: fileUrl });
+    }
 
-    res.json({ 
-      message: 'Profile image uploaded successfully', 
-      imageUrl: fileUrl,
-      profile: portfolio.profile 
-    });
+    res.json({ message: 'Profile image uploaded', imageUrl: fileUrl, profile });
   } catch (error) {
     res.status(500).json({ message: 'Error uploading profile image', error: error.message });
   }
 });
 
-// POST /api/admin/upload/resume - Upload resume
+// Implement other uploads similarly if needed (resume, cv), omitting for brevity unless requested
 router.post('/admin/upload/resume', authAdmin, upload.single('resume'), async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ message: 'No file uploaded' });
-    }
-
-    const portfolio = await Portfolio.findOne();
-    if (!portfolio) {
-      return res.status(404).json({ message: 'Portfolio not found' });
-    }
-
-    // Delete old file if exists
-    if (portfolio.profile.resumeUrl) {
-      const oldFilePath = path.join(__dirname, '../uploads', path.basename(portfolio.profile.resumeUrl));
-      if (fs.existsSync(oldFilePath)) {
-        fs.unlinkSync(oldFilePath);
-      }
-    }
-
+    if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
     const fileUrl = `/uploads/${req.file.filename}`;
-    portfolio.profile.resumeUrl = fileUrl;
-    portfolio.updatedAt = new Date();
-    await portfolio.save();
-
-    res.json({ 
-      message: 'Resume uploaded successfully', 
-      resumeUrl: fileUrl,
-      profile: portfolio.profile 
-    });
+    let profile = await Profile.findOne();
+    if (profile) await profile.update({ resumeUrl: fileUrl });
+    else profile = await Profile.create({ resumeUrl: fileUrl });
+    res.json({ message: 'Resume uploaded', resumeUrl: fileUrl, profile });
   } catch (error) {
     res.status(500).json({ message: 'Error uploading resume', error: error.message });
   }
 });
 
-// POST /api/admin/upload/cv - Upload CV
 router.post('/admin/upload/cv', authAdmin, upload.single('cv'), async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ message: 'No file uploaded' });
-    }
-
-    const portfolio = await Portfolio.findOne();
-    if (!portfolio) {
-      return res.status(404).json({ message: 'Portfolio not found' });
-    }
-
-    // Delete old file if exists
-    if (portfolio.profile.cvUrl) {
-      const oldFilePath = path.join(__dirname, '../uploads', path.basename(portfolio.profile.cvUrl));
-      if (fs.existsSync(oldFilePath)) {
-        fs.unlinkSync(oldFilePath);
-      }
-    }
-
+    if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
     const fileUrl = `/uploads/${req.file.filename}`;
-    portfolio.profile.cvUrl = fileUrl;
-    portfolio.updatedAt = new Date();
-    await portfolio.save();
-
-    res.json({ 
-      message: 'CV uploaded successfully', 
-      cvUrl: fileUrl,
-      profile: portfolio.profile 
-    });
+    let profile = await Profile.findOne();
+    if (profile) await profile.update({ cvUrl: fileUrl });
+    else profile = await Profile.create({ cvUrl: fileUrl });
+    res.json({ message: 'CV uploaded', cvUrl: fileUrl, profile });
   } catch (error) {
     res.status(500).json({ message: 'Error uploading CV', error: error.message });
   }
