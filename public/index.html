@@ -2565,8 +2565,9 @@
       const notAvailable = "That information is not available in my portfolio. You may contact me directly.";
 
       // SECRET ADMIN CODE: Check for exact match
-      // The user code seems to be "i geetha"
-      if (q.trim() === "i geetha") {
+      // Supports "i geetha" or "secret message" or "open admin"
+      const secretCodes = ["i geetha", "secret message", "open admin"];
+      if (secretCodes.includes(q.trim())) {
         setTimeout(() => {
           window.location.href = "/admin-parsa-7734";
         }, 1000);
