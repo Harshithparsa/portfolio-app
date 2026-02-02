@@ -81,6 +81,19 @@
             "githubLink": "https://github.com/Harshithparsa/portfolio-app",
             "liveLink": "https://harshithparsa.github.io/portfolio-app/",
             "imageUrl": null
+        },
+        {
+            "title": "QR Generator",
+            "description": "A powerful QR code generator tool with customizable styles, colors, and formats. Generate QR codes for URLs, text, contacts, and more.",
+            "tags": [
+                "TypeScript",
+                "React",
+                "QR Code",
+                "Utility"
+            ],
+            "githubLink": "https://github.com/Harshithparsa/QR-generator",
+            "liveLink": "#",
+            "imageUrl": null
         }
     ],
     "achievements": [
