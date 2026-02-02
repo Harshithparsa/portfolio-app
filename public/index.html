@@ -99,6 +99,7 @@
       transition: background 0.4s;
       line-height: 1.6;
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
     h1,
@@ -132,6 +133,16 @@
       50% {
         transform: translate(30px, -30px);
       }
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: -1;
     }
 
     @keyframes fadeInUp {
@@ -186,47 +197,37 @@
       align-items: center;
       gap: 12px;
       text-decoration: none;
-      transition: var(--transition);
-    }
-
-    .navbar-logo:hover {
-      opacity: 0.9;
     }
 
     .navbar-logo img {
-      width: 44px;
-      height: 44px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       object-fit: cover;
-      border: 2px solid var(--primary);
-      box-shadow: var(--shadow-sm);
+      border: 1.5px solid var(--primary);
+      transform: scale(1.3);
+      /* Consistent professional crop */
     }
 
     .logo-info {
       display: flex;
       flex-direction: column;
-      gap: 2px;
     }
 
     #logoText {
       font-size: 18px;
       font-weight: 700;
       color: var(--text-main);
-      display: block;
-      margin: 0;
     }
 
     .logo-subtitle {
       font-size: 11px;
-      font-weight: 500;
       color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
 
     .nav-links {
       display: flex;
-      gap: 28px;
+      gap: 32px;
       align-items: center;
     }
 
@@ -235,30 +236,12 @@
       color: var(--text-main);
       font-weight: 500;
       font-size: 14px;
-      position: relative;
-      padding: 4px 0;
       transition: var(--transition);
-    }
-
-    .nav-link::after {
-      content: "";
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: var(--primary);
-      transition: width 0.3s ease;
-      border-radius: 2px;
+      position: relative;
     }
 
     .nav-link:hover {
       color: var(--primary);
-    }
-
-    .nav-link:hover::after,
-    .nav-link.active::after {
-      width: 100%;
     }
 
     .nav-link.active {
@@ -266,7 +249,7 @@
     }
 
     #themeToggle {
-      background: rgba(255, 255, 255, 0.05);
+      background: none;
       border: 1px solid var(--border);
       width: 36px;
       height: 36px;
@@ -277,18 +260,11 @@
       cursor: pointer;
       font-size: 16px;
       transition: var(--transition);
-      color: var(--text-main);
     }
 
     #themeToggle:hover {
       background: rgba(var(--primary-rgb), 0.1);
       border-color: var(--primary);
-      transform: scale(1.1);
-    }
-
-    #themeToggle:hover {
-      transform: rotate(20deg);
-      color: var(--primary);
     }
 
     /* ========== HERO SECTION ========== */
@@ -309,8 +285,8 @@
     .hero-badge {
       display: inline-block;
       padding: 8px 16px;
-      background: rgba(0, 212, 255, 0.1);
-      border: 1px solid rgba(0, 212, 255, 0.3);
+      background: rgba(var(--primary-rgb), 0.1);
+      border: 1px solid rgba(var(--primary-rgb), 0.3);
       border-radius: 50px;
       font-size: 12px;
       font-weight: 700;
@@ -372,12 +348,6 @@
       transition: var(--transition);
     }
 
-    .chip:hover {
-      border-color: var(--primary);
-      background: rgba(0, 212, 255, 0.1);
-      color: var(--primary);
-    }
-
     .cta-buttons {
       display: flex;
       gap: 16px;
@@ -404,11 +374,11 @@
     .btn-primary {
       background: linear-gradient(135deg, var(--primary), var(--secondary));
       color: white;
-      box-shadow: 0 20px 40px rgba(0, 212, 255, 0.3);
+      box-shadow: 0 20px 40px rgba(var(--primary-rgb), 0.3);
     }
 
     .btn-primary:hover {
-      box-shadow: 0 30px 60px rgba(0, 212, 255, 0.5);
+      box-shadow: 0 30px 60px rgba(var(--primary-rgb), 0.5);
       transform: translateY(-2px);
     }
 
@@ -416,12 +386,12 @@
       background: var(--glass);
       border: 2px solid var(--primary);
       color: var(--primary);
-      box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+      box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.2);
     }
 
     .btn-secondary:hover {
-      background: rgba(0, 212, 255, 0.1);
-      box-shadow: 0 0 40px rgba(0, 212, 255, 0.4);
+      background: rgba(var(--primary-rgb), 0.1);
+      box-shadow: 0 0 40px rgba(var(--primary-rgb), 0.4);
       transform: translateY(-2px);
     }
 
@@ -456,31 +426,30 @@
 
     .hero-image {
       position: relative;
-      animation: fadeInUp 0.8s ease;
     }
 
     .hero-image-wrapper {
       position: relative;
-      height: 550px;
-      width: 550px;
-      border-radius: 24px;
-      overflow: visible;
+      height: 500px;
+      width: 500px;
+      border-radius: 50%;
+      overflow: hidden;
       background: transparent;
       display: flex;
       align-items: center;
       justify-content: center;
       margin-left: -60px;
-      /* Move to some distance to left */
+      border: 4px solid var(--primary);
+      box-shadow: 0 0 50px rgba(var(--primary-rgb), 0.3);
     }
 
     .glow-ring {
       position: absolute;
-      inset: -20px;
+      inset: -10px;
       background: linear-gradient(135deg, var(--primary), var(--secondary), var(--primary));
-      border-radius: 16px;
-      opacity: 0.2;
-      filter: blur(30px);
-      animation: pulse 4s ease-in-out infinite;
+      border-radius: 50%;
+      opacity: 0.3;
+      filter: blur(40px);
     }
 
     @keyframes pulse {
@@ -498,11 +467,11 @@
     .hero-image-wrapper img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: cover;
       position: relative;
       z-index: 1;
-      filter: drop-shadow(0 20px 50px rgba(0, 212, 255, 0.3));
-      animation: float 6s ease-in-out infinite;
+      transform: scale(1.3) translateY(15px);
+      /* Scaled and shifted down for better framing */
     }
 
     @keyframes float {
@@ -592,10 +561,11 @@
     }
 
     .highlight-card-label {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--primary);
       text-transform: uppercase;
+      letter-spacing: 1px;
       margin-bottom: 8px;
     }
 
@@ -607,6 +577,74 @@
       background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+    }
+
+    /* ========== TECH STACK SECTION ========== */
+    .skills-section {
+      padding: 100px 24px;
+      background: radial-gradient(circle at center, rgba(56, 189, 248, 0.05), transparent 60%);
+    }
+
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 16px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .tech-card {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      backdrop-filter: blur(16px);
+      transition: all 0.3s ease;
+      cursor: default;
+    }
+
+    .tech-card:hover {
+      transform: translateY(-8px) scale(1.03);
+      border-color: var(--primary);
+      box-shadow: 0 20px 40px rgba(var(--primary-rgb), 0.2), 0 0 20px rgba(var(--primary-rgb), 0.1);
+    }
+
+    .tech-card img {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+    }
+
+    .tech-card span {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-main);
+      text-align: center;
+    }
+
+    .tech-category {
+      margin-bottom: 48px;
+    }
+
+    .tech-category:last-child {
+      margin-bottom: 0;
+    }
+
+    .tech-category-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     /* ========== SERVICES SECTION ========== */
@@ -1512,6 +1550,25 @@
       position: relative;
     }
 
+    .ai-chat-bubble {
+      position: fixed;
+      bottom: 40px;
+      right: 40px;
+      width: 64px;
+      height: 64px;
+      background: #0F172A;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 1000;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 0 15px rgba(37, 99, 235, 0.2);
+      transition: var(--transition);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
     .ai-chat-bubble:hover {
       transform: scale(1.1) rotate(10deg);
     }
@@ -1673,11 +1730,10 @@
 
 <body data-theme="dark">
 
-  <!-- ========== NAVBAR ========== -->
   <nav>
     <div class="navbar-container">
       <a href="#home" class="navbar-logo">
-        <img id="logoImg" src="/hero-design.png" alt="Parsa Harshith">
+        <img id="logoImg" src="/avatar.jpg" alt="Parsa Harshith">
         <div class="logo-info">
           <span id="logoText">Parsa Harshith</span>
           <span class="logo-subtitle">Full-Stack Developer</span>
@@ -1693,7 +1749,6 @@
     </div>
   </nav>
 
-  <!-- ========== HERO SECTION ========== -->
   <section id="home" class="hero-section">
     <div class="hero-content">
       <div class="hero-badge">✨ Open to Opportunities</div>
@@ -1710,7 +1765,7 @@
 
       <div class="cta-buttons">
         <a href="#" id="resumeBtn" class="btn btn-primary" download>📥 Download Resume</a>
-        <a href="/uploads/docs/dummy-cv.pdf" id="downloadCVBtn" class="btn btn-secondary" download>📄 Download CV</a>
+        <a href="#" id="downloadCVBtn" class="btn btn-secondary" download>📄 Download CV</a>
       </div>
 
       <div class="stats-row">
@@ -1719,12 +1774,12 @@
           <div class="stat-label">Projects Built</div>
         </div>
         <div class="stat">
-          <div class="stat-value">MERN</div>
-          <div class="stat-label">Tech Stack</div>
+          <div class="stat-value">3+</div>
+          <div class="stat-label">Years Experience</div>
         </div>
         <div class="stat">
-          <div class="stat-value">India</div>
-          <div class="stat-label">Based In</div>
+          <div class="stat-value">MERN</div>
+          <div class="stat-label">Stack</div>
         </div>
       </div>
     </div>
@@ -1732,7 +1787,7 @@
     <div class="hero-image">
       <div class="hero-image-wrapper">
         <div class="glow-ring"></div>
-        <img id="profileImage" src="/hero-design.png" alt="Profile" style="width:100%; height:auto; max-width:550px;" />
+        <img id="profileImage" src="/avatar.jpg" alt="Profile" />
       </div>
     </div>
   </section>
@@ -1772,6 +1827,163 @@
           </div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ========== TECH STACK SECTION ========== -->
+  <section id="skills" class="skills-section">
+    <div class="section-container">
+      <div class="section-header">
+        <h2 class="section-title">Tech Stack</h2>
+        <p class="section-subtitle">Technologies and tools I work with</p>
+      </div>
+
+      <!-- Frontend -->
+      <div class="tech-category">
+        <h3 class="tech-category-title">🎨 Frontend</h3>
+        <div class="tech-grid">
+          <div class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="React">
+            <span>React</span>
+          </div>
+          <div class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" alt="Next.js">
+            <span>Next.js</span>
+          </div>
+          <div class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg" alt="Vue.js">
+            <span>Vue.js</span>
+          </div>
+          <div class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg"
+              alt="JavaScript">
+            <span>JavaScript</span>
+          </div>
+          <div class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg"
+              alt="TypeScript">
+            <span>TypeScript</span>
+          </div>
+          <div class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML5">
+            <span>HTML5</span>
+          </div>
+          <div class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS3">
+            <span>CSS3</span>
+          </div>
+          <div class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg"
+              alt="Tailwind CSS">
+            <span>Tailwind CSS</span>
+          </div>
+          <div class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sass/sass-original.svg" alt="Sass">
+            <span>Sass</span>
+          </div>
+          <div class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redux/redux-original.svg" alt="Redux">
+            <span>Redux</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Backend -->
+      <div class="tech-category">
+        <h3 class="tech-category-title">⚙️ Backend</h3>
+        <div class="tech-grid">
+          <div class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="Node.js">
+            <span>Node.js</span>
+          </div>
+          <div class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg" alt="Express">
+            <span>Express</span>
+          </div>
+          <div class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python">
+            <span>Python</span>
+          </div>
+          <div class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java">
+            <span>Java</span>
+          </div>
+          <div class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/graphql/graphql-plain.svg" alt="GraphQL">
+            <span>GraphQL</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Databases -->
+      <div class="tech-category">
+        <h3 class="tech-category-title">🗄️ Databases</h3>
+        <div class="tech-grid">
+          <div class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" alt="MongoDB">
+            <span>MongoDB</span>
+          </div>
+          <div class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg"
+              alt="PostgreSQL">
+            <span>PostgreSQL</span>
+          </div>
+          <div class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="MySQL">
+            <span>MySQL</span>
+          </div>
+          <div class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg" alt="Redis">
+            <span>Redis</span>
+          </div>
+          <div class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg" alt="Firebase">
+            <span>Firebase</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- DevOps and Tools -->
+      <div class="tech-category">
+        <h3 class="tech-category-title">🛠️ DevOps and Tools</h3>
+        <div class="tech-grid">
+          <div class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git">
+            <span>Git</span>
+          </div>
+          <div class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub">
+            <span>GitHub</span>
+          </div>
+          <div class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" alt="Docker">
+            <span>Docker</span>
+          </div>
+          <div class="tech-card">
+            <img
+              src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg"
+              alt="AWS">
+            <span>AWS</span>
+          </div>
+          <div class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg" alt="Linux">
+            <span>Linux</span>
+          </div>
+          <div class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" alt="Figma">
+            <span>Figma</span>
+          </div>
+          <div class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg" alt="VS Code">
+            <span>VS Code</span>
+          </div>
+          <div class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/npm/npm-original-wordmark.svg" alt="npm">
+            <span>npm</span>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -1945,39 +2157,39 @@
       </div>
 
       <div class="contact-info-list">
-        <a href="mailto:admin@parsa.dev" class="contact-info-item" id="modalEmailLink">
+        <a href="mailto:parsaharshith@gmail.com" class="contact-info-item" id="modalEmailLink">
           <div class="contact-info-icon">📧</div>
           <div class="contact-info-text">
             <strong>Email</strong>
-            <span id="modalEmailText">admin@parsa.dev</span>
+            <span id="modalEmailText">parsaharshith@gmail.com</span>
           </div>
         </a>
-        <a href="tel:+919876543210" class="contact-info-item">
+        <a href="tel:+919014975103" class="contact-info-item" id="modalPhoneLink">
           <div class="contact-info-icon">📱</div>
           <div class="contact-info-text">
             <strong>Phone</strong>
-            <span>+91 98765 43210</span>
+            <span id="modalPhoneText">+91 90149 75103</span>
           </div>
         </a>
         <div class="contact-info-item">
           <div class="contact-info-icon">📍</div>
           <div class="contact-info-text">
             <strong>Location</strong>
-            <span id="modalLocationText">India</span>
+            <span id="modalLocationText">Hyderabad</span>
           </div>
         </div>
-        <a href="https://linkedin.com/in/harshith" target="_blank" class="contact-info-item">
+        <a href="https://linkedin.com/in/harshithparsa" target="_blank" class="contact-info-item">
           <div class="contact-info-icon">🔗</div>
           <div class="contact-info-text">
             <strong>LinkedIn</strong>
-            <span>linkedin.com/in/harshith</span>
+            <span>linkedin.com/in/harshithparsa</span>
           </div>
         </a>
-        <a href="https://github.com/harshith" target="_blank" class="contact-info-item">
+        <a href="https://github.com/Harshithparsa" target="_blank" class="contact-info-item">
           <div class="contact-info-icon">🐙</div>
           <div class="contact-info-text">
             <strong>GitHub</strong>
-            <span>github.com/harshith</span>
+            <span>github.com/Harshithparsa</span>
           </div>
         </a>
       </div>
@@ -2007,7 +2219,7 @@
 
   <!-- ========== AI CHAT UI ========== -->
   <div class="ai-chat-bubble" onclick="toggleAIChat()">
-    <img src="/chatbot-icon.png" alt="AI Assistant">
+    <img src="/ai-icon.png" alt="AI Assistant">
   </div>
 
   <div id="sampleToast" class="toast-v3">
@@ -2019,7 +2231,7 @@
     <div class="chat-header">
       <div class="chat-header-info">
         <div class="chat-header-avatar">
-          <img src="/chatbot-icon.png" alt="AI">
+          <img src="/ai-icon.png" alt="AI">
         </div>
         <div>
           <h4 style="font-size: 14px; margin: 0;">Portfolio Assistant</h4>
@@ -2057,9 +2269,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
   <script>
-    const API_BASE = '/api';
     let portfolioData = {};
-    let currentTheme = localStorage.getItem('theme') || 'light';
+    let currentTheme = localStorage.getItem('theme') || 'dark';
 
     // ========== THEME TOGGLE ==========
     document.body.setAttribute('data-theme', currentTheme);
@@ -2113,11 +2324,11 @@
     // ========== LOAD PORTFOLIO DATA ==========
     async function loadPortfolio() {
       try {
-        const response = await fetch(`${API_BASE}/portfolio/public/profile`, { cache: 'no-store' });
+        const response = await fetch('/data/portfolio.json', { cache: 'no-store' });
         const data = await response.json();
 
         portfolioData = {
-          ...(data.profile || data),
+          ...data,
           skills: data.skills || [],
           projects: data.projects || [],
           achievements: data.achievements || [],
@@ -2126,9 +2337,7 @@
 
         renderPortfolio();
       } catch (error) {
-        console.error('Error loading portfolio:', error);
-        loadDefaultData();
-        renderPortfolio();
+        console.error('Error loading portfolio data:', error);
       }
     }
 
@@ -2194,82 +2403,57 @@
       });
     });
 
-    function loadDefaultData() {
-      portfolioData = {
-        name: null, // Force null to trigger is-sample
-        tagline: null,
-        about: null,
-        email: 'admin@parsa.dev',
-        location: 'India',
-        profileImage: null,
-        resumeUrl: null,
-        cvUrl: null,
-        skills: [{ name: 'React' }, { name: 'Node.js' }],
-        projects: [
-          { title: 'Project Alpha (Sample)', description: 'Performance optimized dashboard featuring real-time data streaming.', tags: ['MERN', 'Redux'], githubLink: '#', liveLink: '#', isSample: true },
-          { title: 'Project Beta (Sample)', description: 'Immersive 3D portfolio interface crafted with Three.js and GLSL.', tags: ['Vue', 'GSAP'], githubLink: '#', liveLink: '#', isSample: true }
-        ],
-        achievements: [
-          { title: 'Milestone: Initial Deployment', date: 'Jan 2026', detail: 'Portfolio core architecture established.', isSample: true }
-        ],
-        certificates: []
-      };
-    }
 
     function renderPortfolio() {
       const { name, tagline, about, profileImage, resumeUrl, projects, achievements } = portfolioData;
 
       const heroName = document.getElementById('heroName');
-      heroName.textContent = name || 'Harshith';
-      if (!name) heroName.classList.add('is-sample');
+      if (heroName) {
+        heroName.textContent = name || 'Harshith';
+        if (!name) heroName.classList.add('is-sample');
+      }
 
       const heroSubtitle = document.getElementById('heroSubtitle');
-      heroSubtitle.textContent = tagline || 'Full-Stack Developer';
-      if (!tagline) heroSubtitle.classList.add('is-sample');
+      if (heroSubtitle) {
+        heroSubtitle.textContent = tagline || 'Full-Stack Developer';
+        if (!tagline) heroSubtitle.classList.add('is-sample');
+      }
 
       const heroDescription = document.getElementById('heroDescription');
-      heroDescription.textContent = about || 'Building amazing web experiences';
-      if (!about) heroDescription.classList.add('is-sample');
+      if (heroDescription) {
+        heroDescription.textContent = about || 'Building amazing web experiences';
+        if (!about) heroDescription.classList.add('is-sample');
+      }
 
-      document.getElementById('logoText').textContent = name || 'Harshith';
-      document.getElementById('aboutText1').textContent = about || 'Passionate developer';
-      document.getElementById('footerName').textContent = name || 'Developer';
+      const logoText = document.getElementById('logoText');
+      if (logoText) logoText.textContent = name || 'Parsa Harshith';
+
+      const aboutText1 = document.getElementById('aboutText1');
+      if (aboutText1) aboutText1.textContent = about || 'Passionate developer';
+
+      const footerName = document.getElementById('footerName');
+      if (footerName) footerName.textContent = name || 'Developer';
+
       document.title = `${name || "Harshith"} — Portfolio`;
 
       if (profileImage) {
-        document.getElementById('logoImg').src = profileImage;
+        const logoImg = document.getElementById('logoImg');
+        const profileImg = document.getElementById('profileImage');
+        if (logoImg) logoImg.src = profileImage;
+        if (profileImg) profileImg.src = profileImage;
       }
 
       if (resumeUrl) {
-        document.getElementById('resumeBtn').href = resumeUrl;
-        document.getElementById('navResume').href = resumeUrl;
-        document.getElementById('resumeBtn').setAttribute('target', '_blank');
-        document.getElementById('navResume').setAttribute('target', '_blank');
-      } else {
-        const rb = document.getElementById('resumeBtn');
-        const nr = document.getElementById('navResume');
-        rb.href = 'javascript:void(0)';
-        rb.removeAttribute('target');
-        rb.classList.add('is-sample');
-        nr.href = 'javascript:void(0)';
-        nr.removeAttribute('target');
-        nr.classList.add('is-sample');
-      }
-
-      if (portfolioData.cvUrl) {
-        document.getElementById('downloadCVBtn').href = portfolioData.cvUrl;
-        document.getElementById('navCV').href = portfolioData.cvUrl;
-        document.getElementById('downloadCVBtn').setAttribute('target', '_blank');
-        document.getElementById('navCV').setAttribute('target', '_blank');
-      } else {
-        const dcv = document.getElementById('downloadCVBtn');
-        const ncv = document.getElementById('navCV');
-        dcv.href = 'javascript:void(0)';
-        dcv.removeAttribute('target');
-        dcv.classList.add('is-sample');
-        ncv.href = 'javascript:void(0)';
-        ncv.removeAttribute('target');
-        ncv.classList.add('is-sample');
+        const resumeBtn = document.getElementById('resumeBtn');
+        const navResume = document.getElementById('navResume');
+        if (resumeBtn) {
+          resumeBtn.href = resumeUrl;
+          resumeBtn.setAttribute('target', '_blank');
+        }
+        if (navResume) {
+          navResume.href = resumeUrl;
+          navResume.setAttribute('target', '_blank');
+        }
       }
 
       // Projects Section Fallback
@@ -2287,25 +2471,22 @@
       ];
       renderAchievements(actualAchievements);
 
-      // Social Links Sample Handling
-      const socials = portfolioData.socials || {};
-      const modalLinks = document.getElementById('contactModal').querySelectorAll('.contact-info-item');
-      modalLinks.forEach(link => {
-        const href = link.getAttribute('href');
-        // If it's a default link or missing configuration, mark as sample
-        if (href && (href.includes('harshith') || href === '#')) {
-          link.classList.add('is-sample');
-          link.addEventListener('click', (e) => e.preventDefault());
-        }
-      });
-
-      // Sync modal data
+      // Sync modal data from portfolio.json
       if (portfolioData.email) {
-        document.getElementById('modalEmailText').textContent = portfolioData.email;
-        document.getElementById('modalEmailLink').href = `mailto:${portfolioData.email}`;
+        const emailLink = document.getElementById('modalEmailLink');
+        const emailText = document.getElementById('modalEmailText');
+        if (emailLink) emailLink.href = `mailto:${portfolioData.email}`;
+        if (emailText) emailText.textContent = portfolioData.email;
+      }
+      if (portfolioData.mobile) {
+        const phoneLink = document.getElementById('modalPhoneLink');
+        const phoneText = document.getElementById('modalPhoneText');
+        if (phoneLink) phoneLink.href = `tel:+91${portfolioData.mobile}`;
+        if (phoneText) phoneText.textContent = `+91 ${portfolioData.mobile.slice(0, 5)} ${portfolioData.mobile.slice(5)}`;
       }
       if (portfolioData.location) {
-        document.getElementById('modalLocationText').textContent = portfolioData.location;
+        const locationText = document.getElementById('modalLocationText');
+        if (locationText) locationText.textContent = portfolioData.location;
       }
     }
 
@@ -2368,18 +2549,25 @@
 
     // ========== ANALYTICS ==========
     function initializeAnalytics() {
-      let visitorId = localStorage.getItem('portfolioVisitorId');
-      if (!visitorId) {
-        visitorId = 'visitor_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        localStorage.setItem('portfolioVisitorId', visitorId);
-      }
+      // Skip analytics in static mode (no backend)
+      if (typeof API_BASE === 'undefined' || !API_BASE) return;
 
-      fetch(`${API_BASE}/track`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ visitorId, type: 'page_view', page: window.location.pathname }),
-        keepalive: true
-      }).catch(() => { });
+      try {
+        let visitorId = localStorage.getItem('portfolioVisitorId');
+        if (!visitorId) {
+          visitorId = 'visitor_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+          localStorage.setItem('portfolioVisitorId', visitorId);
+        }
+
+        fetch(`${API_BASE}/track`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ visitorId, type: 'page_view', page: window.location.pathname }),
+          keepalive: true
+        }).catch(() => { });
+      } catch (e) {
+        // Silently ignore analytics errors
+      }
     }
 
     // ========== SCROLL ANIMATIONS ==========
@@ -2603,7 +2791,7 @@
 
       // 4. Contact / Personal Data
       if (q.includes('email') || q.includes('contact') || q.includes('hire') || q.includes('phone')) {
-        return `You can reach Harshith via email at: <strong>${email || 'admin@parsa.dev'}</strong>, or use the contact form on this site.`;
+        return `You can reach Harshith via email at: <strong>${email || 'parsaharshith@gmail.com'}</strong>, or use the contact form on this site.`;
       }
 
       // 5. Experience / About

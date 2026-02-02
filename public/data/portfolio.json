@@ -1,0 +1,93 @@
+{
+    "name": "Harshith Parsa",
+    "tagline": "Senior Full-Stack Architect",
+    "about": "Specialized in building high-performance architectures and premium digital experiences using the MERN stack. I bridge the gap between complex backend logic and pixel-perfect frontend execution.",
+    "email": "parsaharshith@gmail.com",
+    "mobile": "9014975103",
+    "location": "Hyderabad",
+    "profileImage": "avatar.jpg",
+    "resumeUrl": "#",
+    "cvUrl": "#",
+    "socials": {
+        "github": "https://github.com/Harshithparsa",
+        "linkedin": "https://linkedin.com/in/harshithparsa"
+    },
+    "skills": [
+        {
+            "name": "React / Next.js"
+        },
+        {
+            "name": "Node.js (Built-in)"
+        },
+        {
+            "name": "Cloud Architecture"
+        },
+        {
+            "name": "UI/UX Engineering"
+        },
+        {
+            "name": "MERN Specialist"
+        }
+    ],
+    "projects": [
+        {
+            "title": "Convozo",
+            "description": "A real-time chat application with modern UI, featuring instant messaging, user authentication, and seamless communication experience.",
+            "tags": [
+                "JavaScript",
+                "Node.js",
+                "Socket.io",
+                "Real-time"
+            ],
+            "githubLink": "https://github.com/Harshithparsa/convozo",
+            "liveLink": "#",
+            "imageUrl": null
+        },
+        {
+            "title": "VibeMate",
+            "description": "A social networking platform designed to connect people based on shared interests and vibes. Built with TypeScript for type-safe development.",
+            "tags": [
+                "TypeScript",
+                "React",
+                "Social",
+                "Full-Stack"
+            ],
+            "githubLink": "https://github.com/Harshithparsa/vibemate",
+            "liveLink": "#",
+            "imageUrl": null
+        },
+        {
+            "title": "SnapKart",
+            "description": "A modern e-commerce platform with intuitive shopping experience, product catalog, cart management, and secure checkout functionality.",
+            "tags": [
+                "Vue.js",
+                "E-Commerce",
+                "Nuxt",
+                "Full-Stack"
+            ],
+            "githubLink": "https://github.com/Harshithparsa/snapkart",
+            "liveLink": "#",
+            "imageUrl": null
+        },
+        {
+            "title": "Portfolio App",
+            "description": "A premium, animated portfolio website showcasing projects, skills, and achievements with glassmorphic design and smooth animations.",
+            "tags": [
+                "HTML",
+                "CSS",
+                "JavaScript",
+                "GSAP"
+            ],
+            "githubLink": "https://github.com/Harshithparsa/portfolio-app",
+            "liveLink": "https://harshithparsa.github.io/portfolio-app/",
+            "imageUrl": null
+        }
+    ],
+    "achievements": [
+        {
+            "title": "Premium Portfolio Launch",
+            "date": "Jan 2026",
+            "detail": "Successfully deployed the elite static version of the Harshith.dev ecosystem."
+        }
+    ]
+}

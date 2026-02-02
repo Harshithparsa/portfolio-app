@@ -1,294 +1,113 @@
-# 🚀 Full-Stack Portfolio App
+# 🚀 Harshith Parsa - Portfolio
 
-A professional portfolio website with an admin dashboard for managing content. Built with Node.js, Express, MongoDB, and vanilla JavaScript.
+A modern, animated portfolio website showcasing my projects, skills, and achievements. Built with vanilla HTML, CSS, and JavaScript with stunning glassmorphic design and smooth GSAP animations.
 
-## Features
+![Portfolio Preview](https://img.shields.io/badge/Status-Live-brightgreen) ![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white) ![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white) ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)
 
-✅ **Public Portfolio Website**
-- Read-only for visitors
-- Fetches data from backend API
-- Dark/light theme toggle
-- Responsive design
-- Displays: Profile, About, Skills, Projects, Achievements, Certificates, Contact
+## ✨ Features
 
-✅ **Admin Dashboard**
-- Secure login (JWT authentication)
-- Edit all portfolio content
-- Upload profile picture, resume, and CV
-- Manage: Profile, Skills, Certificates, Projects, Achievements, Social Links
-- Changes appear instantly on public site
+- **🎨 Modern Design** - Glassmorphic UI with smooth gradients and premium aesthetics
+- **🌙 Theme Switching** - Light/Dark mode with system preference detection
+- **📱 Fully Responsive** - Optimized for all devices (desktop, tablet, mobile)
+- **🎬 GSAP Animations** - Smooth scroll-triggered animations and micro-interactions
+- **🤖 AI Assistant** - Interactive chat assistant for visitors
+- **📧 Contact Section** - Quick access to email, phone, and social links
+- **⚡ Fast Loading** - Static site with optimized performance
 
-✅ **Security**
-- JWT authentication
-- Protected admin routes
-- Password hashing with bcrypt
-- No edit controls visible to public users
+## 🛠️ Tech Stack
 
-## Tech Stack
+| Technology | Purpose |
+|------------|---------|
+| HTML5 | Structure & Semantics |
+| CSS3 | Styling & Animations |
+| JavaScript | Interactivity & Logic |
+| GSAP | Scroll Animations |
+| Google Fonts | Typography (Inter, Outfit) |
 
-- **Backend**: Node.js + Express.js
-- **Database**: MongoDB
-- **Authentication**: JWT + bcrypt
-- **File Uploads**: Multer
-- **Frontend**: HTML + CSS + Vanilla JavaScript
-
-## Folder Structure
+## 📂 Project Structure
 
 ```
 portfolio-app/
-├── server/
-│   ├── index.js              (Main server file)
-│   ├── models/
-│   │   └── Portfolio.js      (MongoDB schema)
-│   ├── routes/
-│   │   ├── auth.js           (Login endpoint)
-│   │   └── portfolio.js      (API endpoints)
-│   ├── middleware/
-│   │   └── auth.js           (JWT verification)
-│   └── uploads/              (Uploaded files stored here)
 ├── public/
-│   ├── index.html            (Public portfolio)
-│   └── admin.html            (Admin dashboard)
-├── package.json
-├── .env                      (Configuration)
-└── README.md
+│   ├── index.html          # Main portfolio page
+│   ├── admin.html          # Admin dashboard (static)
+│   ├── data/
+│   │   └── portfolio.json  # Portfolio data (projects, skills, etc.)
+│   ├── avatar.jpg          # Profile picture
+│   ├── ai-icon.png         # AI assistant icon
+│   └── favicon.svg         # Site favicon
+├── package.json            # Project configuration
+└── README.md               # This file
 ```
 
-## Setup Instructions
+## 🚀 Quick Start
 
-### 1. Install MongoDB
-
-**Windows:**
-- Download from: https://www.mongodb.com/try/download/community
-- Install and run MongoDB service
-- Or use MongoDB Atlas (cloud): https://www.mongodb.com/cloud/atlas
-
-**macOS/Linux:**
+### Option 1: Using npm (Recommended)
 ```bash
-# macOS
-brew install mongodb-community
-brew services start mongodb-community
-
-# Linux
-sudo apt-get install -y mongodb
-sudo systemctl start mongod
-```
-
-### 2. Install Node.js Dependencies
-
-```bash
-cd portfolio-app
+# Install dependencies
 npm install
-```
 
-### 3. Configure Environment
-
-Edit `.env` file and update if needed:
-```
-MONGODB_URI=mongodb://localhost:27017/portfolio_db
-JWT_SECRET=your_super_secret_jwt_key_change_this_in_production_12345
-ADMIN_USERNAME=admin
-ADMIN_PASSWORD=admin123
-PORT=5000
-NODE_ENV=development
-```
-
-### 4. Start the Server
-
-```bash
-npm start
-```
-
-Or for development (auto-reload):
-```bash
-npm install -g nodemon  # Install once globally
+# Start local server
 npm run dev
 ```
+Then open [http://localhost:3000](http://localhost:3000) in your browser.
 
-Server will run on: http://localhost:5000
+### Option 2: Direct Open
+Simply open `public/index.html` in your browser.
 
-### 5. Access the Applications
+## 📝 Customization
 
-- **Public Portfolio**: http://localhost:5000
-- **Admin Dashboard**: http://localhost:5000/admin
-  - Username: `admin`
-  - Password: `admin123`
+### Update Personal Information
+Edit `public/data/portfolio.json` to update:
+- Name, tagline, and bio
+- Contact details (email, phone, location)
+- Social links (GitHub, LinkedIn)
+- Projects list
+- Skills and achievements
 
-## How to Use
-
-### For Visitors (Public Site)
-
-1. Open http://localhost:5000
-2. View your portfolio (read-only)
-3. Click "Admin" link to access dashboard
-
-### For Admin (Dashboard)
-
-1. Go to http://localhost:5000/admin
-2. Login with credentials (default: admin/admin123)
-3. Edit any section using the tabs:
-   - **Profile**: Name, tagline, about, email, location, profile picture
-   - **Skills**: Add skill categories with items
-   - **Certificates**: Add certifications with issuer and link
-   - **Projects**: Add projects with GitHub and live demo links
-   - **Achievements**: Add timeline achievements
-
-4. Upload files:
-   - Profile image (in Profile tab)
-   - Resume PDF
-   - CV PDF
-
-5. Click "Save" button for each section
-6. Changes appear instantly on public site
-
-## API Endpoints
-
-### Public (No Auth Required)
-- `GET /api/portfolio/public/profile` - Get all portfolio data
-
-### Admin (JWT Required)
-- `POST /api/auth/login` - Login to admin
-- `PUT /api/portfolio/admin/profile` - Update profile
-- `PUT /api/portfolio/admin/skills` - Update skills
-- `PUT /api/portfolio/admin/certificates` - Update certificates
-- `PUT /api/portfolio/admin/projects` - Update projects
-- `PUT /api/portfolio/admin/achievements` - Update achievements
-- `POST /api/portfolio/admin/upload/profileImage` - Upload profile photo
-- `POST /api/portfolio/admin/upload/resume` - Upload resume
-- `POST /api/portfolio/admin/upload/cv` - Upload CV
-
-## File Upload Locations
-
-All uploaded files are stored in:
-```
-server/uploads/
-```
-
-They're served at:
-```
-http://localhost:5000/uploads/<filename>
-```
-
-## Customization
-
-### Change Admin Credentials
-
-Edit `.env`:
-```
-ADMIN_USERNAME=your_username
-ADMIN_PASSWORD=your_password
-```
-
-### Change JWT Secret
-
-Edit `.env` (important for production):
-```
-JWT_SECRET=very_long_random_secret_key_min_32_chars
-```
-
-### Change MongoDB Connection
-
-Edit `.env`:
-```
-# Local
-MONGODB_URI=mongodb://localhost:27017/portfolio_db
-
-# MongoDB Atlas (cloud)
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/portfolio_db
-```
-
-### Modify Colors/Theme
-
-Edit `public/index.html` and `public/admin.html` CSS variables:
-```css
-:root {
-  --primary: #2563EB;
-  --accent: #10B981;
-  --bg: #F8FAFC;
-  --card: #FFFFFF;
-  --text: #0F172A;
-  /* ... */
+### Example: Adding a Project
+```json
+{
+    "title": "Project Name",
+    "description": "Brief description of the project",
+    "tags": ["React", "Node.js", "MongoDB"],
+    "githubLink": "https://github.com/username/repo",
+    "liveLink": "https://project-demo.com",
+    "imageUrl": null
 }
 ```
 
-## Troubleshooting
+## 🌐 Deployment
 
-**"Cannot connect to MongoDB"**
-- Make sure MongoDB is running
-- Check connection string in `.env`
-- If using local: `mongod` service must be running
+This static site can be deployed to any hosting platform:
 
-**"CORS error when loading data"**
-- CORS is already enabled in server
-- Check browser console for exact error
-- Make sure API_BASE URL in frontend matches server port
+| Platform | Status | Notes |
+|----------|--------|-------|
+| **GitHub Pages** | ✅ Recommended | Free, easy setup |
+| **Vercel** | ✅ Supported | Auto-deploy from GitHub |
+| **Netlify** | ✅ Supported | Drag & drop deploy |
+| **Railway** | ✅ Supported | As static site |
 
-**"Admin login not working"**
-- Check username/password in `.env`
-- Refresh page and try again
-- Check browser console for error messages
+### Deploy to GitHub Pages
+1. Push your code to GitHub
+2. Go to Repository Settings → Pages
+3. Select `main` branch and `/public` folder
+4. Your site will be live at `https://username.github.io/portfolio-app/`
 
-**"Files not uploading"**
-- Check `server/uploads/` folder permissions
-- Make sure folder exists
-- Check browser console and server logs
+## 📬 Contact
 
-## Deployment
+- **Email:** parsaharshith@gmail.com
+- **Phone:** +91 90149 75103
+- **Location:** Hyderabad, India
+- **GitHub:** [@Harshithparsa](https://github.com/Harshithparsa)
+- **LinkedIn:** [Harshith Parsa](https://linkedin.com/in/harshithparsa)
 
-### For Production
+## 📄 License
 
-1. Update `.env`:
-```
-JWT_SECRET=generate_very_long_random_key
-NODE_ENV=production
-MONGODB_URI=your_production_mongodb_url
-ADMIN_PASSWORD=strong_password
-```
-
-2. Use Heroku, Vercel, Railway, or any Node.js host
-
-3. Set environment variables on hosting platform
-
-4. Run: `npm start`
-
-## Security Tips
-
-1. **Change default credentials** in `.env`
-2. **Use strong JWT secret** (at least 32 characters)
-3. **Use HTTPS** in production
-4. **Store `.env` in `.gitignore`** (never commit!)
-5. **Use environment variables** for sensitive data
-6. **Enable CORS only for your domain** in production
-
-## Next Steps
-
-### Enhance your portfolio:
-- Add project images
-- Add more certificates
-- Add social links
-- Upload resume/CV
-- Customize colors and fonts
-- Deploy to web
-
-### Advanced:
-- Add email notifications on form submission
-- Add analytics
-- Add blog section
-- Connect to GitHub API for projects
-- Add comments/feedback form
-
-## Support
-
-For issues or questions:
-1. Check error messages in browser console
-2. Check server terminal logs
-3. Review `.env` configuration
-4. Ensure MongoDB is running
-
-## License
-
-Free to use and modify for personal projects.
+This project is open source and available under the [MIT License](LICENSE).
 
 ---
 
-**Built with ❤️ for portfolio management**
+<p align="center">
+  Made with ❤️ by <strong>Harshith Parsa</strong>
+</p>
